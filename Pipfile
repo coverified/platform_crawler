@@ -19,6 +19,10 @@ flask-restful = "*"
 flask-limiter = "*"
 gunicorn = "*"
 psycopg2 = "*"
+gql = "*"
+python-graphql-client = "*"
+sgqlc = "*"
+langdetect = "*"
 
 [requires]
 python_version = "3.8"

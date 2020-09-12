@@ -12,6 +12,8 @@ class Development(object):
     DEBUG = True
     TESTING = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    GRAPHQL_API = os.getenv('GRAPHQL_API')
+
 
 
 class Production(object):
@@ -21,6 +23,7 @@ class Production(object):
     DEBUG = False
     TESTING = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
+    GRAPHQL_API = os.getenv('GRAPHQL_API')
 
 app_config = {
     'development': Development,
