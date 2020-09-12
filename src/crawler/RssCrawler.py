@@ -5,9 +5,6 @@ import lxml.html
 
 from src.app import log
 
-from sqlalchemy.exc import OperationalError as SQOperationalError, ProgrammingError
-from psycopg2 import OperationalError as PsyOperationalError
-
 import html
 
 keywords = []
@@ -26,32 +23,11 @@ def create_crawler(filter_words, feed_urls):
     log.info("Successfully configured rss crawler!")
 
 
-def crawl_and_persist_data():
-    success = bool(False)
-    try:
-        log.info("Collecting data from rss feeds...")
-        rss_data_list = crawl_rss_data()
-        log.info("Collected " + str(len(rss_data_list)) + " elements.")
-        log.info("Persisting collected data to database...")
-        for feed_entry in rss_data_list:
-            build_feed_data_and_persist(feed_entry)
-        success = bool(True)
-    except (SQOperationalError, PsyOperationalError, ProgrammingError) as e:
-        log.error("Persisting data from crawled feed failed with exception: " + str(e))
-
-    if success:
-        log.info("Successfully persisted rss feed data to database!")
-
-
-def build_feed_data_and_persist(feed_entry):
-    timestamp = feed_entry.published
-    title = clean_string(feed_entry.title)
-    content = clean_string(feed_entry.summary)
-    url = feed_entry.link
-
-    data = {'timestamp': timestamp, 'title': title, 'content': content, 'url': url}
-
-    log.debug("Data-Title: " + data["title"])  # todo JH replace with graphql mutation call
+def crawl_data():
+    log.info("Collecting data from rss feeds...")
+    rss_data_list = crawl_rss_data()
+    log.info("Collected " + str(len(rss_data_list)) + " elements.")
+    return rss_data_list
 
 
 def crawl_rss_data():

@@ -1,7 +1,7 @@
 # /src/views/CrawlerView
 
 import os
-from ..crawler.RssCrawler import crawl_and_persist_data
+from ..crawler.RssCrawler import crawl_data
 
 from flask import Blueprint, json, Response
 
@@ -16,7 +16,15 @@ def execute_crawler(uuid):
     if uuid != crawler_token:
         return custom_response("Invalid access token provided!", 400)
 
-    crawl_and_persist_data()
+    # get all existing languages todo
+
+    # get all existing tags todo
+
+    # crawl data
+    rss_data_list = crawl_data()
+
+    # persist data (incl. language detection + tag detection) # todo
+
     return custom_response("Crawled and persisted rss feed data!", 200)
 
 
