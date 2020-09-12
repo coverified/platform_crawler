@@ -1,18 +1,22 @@
 from src.app import log
 
 from dateutil.parser import parse
+from functools import reduce
 
 # language detection imports
 from langdetect import detect
 from langdetect import DetectorFactory
 
-from src.db.coverified_schema import EntryCreateInput, LanguageRelateToOneInput, LanguageWhereUniqueInput
+from src.crawler.TagHandler import TagHandler
+from src.db.coverified_schema import EntryCreateInput, LanguageRelateToOneInput, LanguageWhereUniqueInput, \
+    TagRelateToManyInput, TagWhereUniqueInput
 from src.util.StringUtil import StringUtil
 
 DetectorFactory.seed = 0  # enforce consistent language detection results
 
 
 class EntryHandler:
+    tag_handler = TagHandler()
 
     def filter_duplicates(self, rss_data_list, existing_entries):
         # map title + published date + content + url to a string and compare them
@@ -50,6 +54,12 @@ class EntryHandler:
         new_entries = set()
         for feed_entry in rss_data_list:
             # get tags
+            tag_ids = list()
+            for tag_name in self.__determine_entry_tag(feed_entry):
+                tag_id = tag_map.get(tag_name).id
+                tag_ids.append(TagWhereUniqueInput(id=tag_id))
+
+            tags = TagRelateToManyInput(connect=tag_ids)
 
             # get language
             language_id = language_map.get(self.__detect_entry_lang(feed_entry)).id
@@ -60,8 +70,10 @@ class EntryHandler:
                                              content=StringUtil.clean_string(feed_entry.summary),
                                              url=feed_entry.link,
                                              language=language,
+                                             tags=tags
                                              ))
-            # todo JH tags
+
+        log.info("New entities: " + str(len(new_entries)))
         return new_entries
 
     def detect_lang(self, rss_data_list):
@@ -73,10 +85,18 @@ class EntryHandler:
     def __detect_entry_lang(feed_entry):
         return detect(StringUtil.clean_string(feed_entry.title) + StringUtil.clean_string(feed_entry.summary))
 
-    @staticmethod
-    def determine_tags(rss_data_list):
-        # todo JH
-        return set()
+    def determine_tags(self, rss_data_list):
+        tag_list = list(map(lambda entry: self.__determine_entry_tag(entry), rss_data_list))
+        if tag_list:
+            tags = reduce(set.union, tag_list)
+        else:
+            tags = set()
+        log.debug("Determined tags: " + ", ".join(tags))
+        return tags
+
+    def __determine_entry_tag(self, feed_entry):
+        return self.tag_handler.get_tags_from(
+            StringUtil.clean_string(feed_entry.title) + StringUtil.clean_string(feed_entry.summary))
 
     @staticmethod
     def __map_to_name(lst):

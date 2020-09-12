@@ -59,7 +59,7 @@ class GraphQLConnector:
 
         # if tag is not present in db, create it
         if not (next((x for x in all_existing_tags if x.name == tag_name), None)):
-            self.create_language(tag_name)
+            self.create_tag(tag_name)
             log.debug("Created new tag entry: " + tag_name)
         else:
             log.debug("Tag " + tag_name + " already exist. No need to add a new entry.")

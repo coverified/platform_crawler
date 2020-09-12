@@ -66,7 +66,7 @@ def execute_crawler(uuid):
     for entry in new_entries:
         db_con.create_entry(entry)
 
-    return custom_response("Crawled and persisted rss feed data!", 200)
+    return custom_response("Crawled and persisted " + str(len(new_entries)) + " rss feed elements!", 200)
 
 
 def custom_response(res, status_code):
