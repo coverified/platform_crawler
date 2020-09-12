@@ -1,11 +1,9 @@
 # /src/views/CrawlerView
 
 import feedparser
-import lxml.html
 
 from src.app import log
-
-import html
+from src.util.StringUtil import StringUtil
 
 keywords = []
 feeds = []
@@ -31,25 +29,12 @@ def crawl_data():
 
 
 def crawl_rss_data():
-    return list(filter(lambda x: filter_keywords(clean_string(filter_html(x.title + x.summary))),
+    return list(filter(lambda x: filter_keywords(StringUtil.clean_string(StringUtil.filter_html(x.title + x.summary))),
                        flatten([feedparser.parse(feed_url).entries for feed_url in feeds])))
 
 
 def filter_keywords(string):
     return bool(any(x in string.casefold() for x in keywords))
-
-
-def clean_string(string):
-    # we don't want soft hyphen in the db
-    soft_hyphen_html = "&#173;"
-    # we don't want line breaks in the db
-    return html.unescape(string.replace(soft_hyphen_html, "").replace("\n", " "))
-
-
-def filter_html(string):
-    if not string:
-        return string
-    return lxml.html.fromstring(string).text_content()
 
 
 def flatten(list):
