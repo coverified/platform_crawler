@@ -5,4 +5,4 @@ set -e
 
 echo "> Starting backend ..."
 
-gunicorn --bin 0.0.0.0:$PORT main:app
+gunicorn --bin 0.0.0.0:$PORT main:app --timeout 240
