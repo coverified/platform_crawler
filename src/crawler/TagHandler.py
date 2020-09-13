@@ -2,6 +2,7 @@ import os
 import json
 import requests
 
+from src.app import log
 
 class TagHandler:
     __ibm_cloud_nlu_url__ = os.getenv('IBM_CLOUD_NLU_API_URL')
@@ -15,6 +16,7 @@ class TagHandler:
         self.__ibm_cloud_nlu_api_key__ = ibm_cloud_nlu_api_key
 
         if not self.__ibm_cloud_nlu_url__ or not self.__ibm_cloud_nlu_api_key__:
+            log.error("Missing configuration parameters for 'IBM_CLOUD_NLU_API_URL' and/or 'IBM_CLOUD_NLU_API_KEY'")
             raise EnvironmentError(
                 "Missing configuration parameters for 'IBM_CLOUD_NLU_API_URL' and/or 'IBM_CLOUD_NLU_API_KEY'")
 
