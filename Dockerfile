@@ -22,7 +22,6 @@ COPY ./ $WORKDIR
 RUN apk add --update --upgrade --no-cache --virtual .build-deps \
     bash \
     g++ \
-    python-dev \
     libxml2 \
     postgresql-dev \
     gcc \
@@ -40,7 +39,7 @@ RUN apk add --update --upgrade --no-cache --virtual .build-deps \
     ## make startup scripts executable
     && chmod +x $WORKDIR/sh/crawler-container-startup.sh \
     # chown entry scripts to app user
-    && chown -R app:app $WORKDIR/sh/crawler-container-startup.sh \
+    && chown -R app:app $WORKDIR/sh/crawler-container-startup.sh
 
 # change to the app user
 USER app
