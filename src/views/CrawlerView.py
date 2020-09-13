@@ -3,6 +3,7 @@
 import os
 import datetime as dt
 from datetime import timedelta
+from src.app import log
 
 from ..crawler.EntryHandler import EntryHandler
 from ..crawler.RssCrawler import crawl_data
@@ -36,28 +37,38 @@ def execute_crawler(uuid):
     db_con = GraphQLConnector(api_url=api_url)
 
     # get all existent entries that has been updated within the last 24h
+    log.info("Try to get existing entries with time delta 24h from " + api_url + "...")
     existing_entries = db_con.get_all_entries(updated_at_gte=(dt.datetime.now() - timedelta(hours=24)))
+    log.info("Loaded existing " + str(len(existing_entries)) + " entries successfully!")
 
     # check if they new crawled data contains intersecting items,
     # if yes remove them from the newly crawled data and update
     # the updated data of the old ones
+    log.info("Determining new rss data and data that needs to be updated...")
     new_rss_data, existing_entries_4_update = handler.filter_duplicates(rss_data_list, existing_entries)
+    log.info(
+        "Entities to be updated: " + str(len(existing_entries_4_update)) + "; New entities: " + str(len(new_rss_data)))
 
     for entry in existing_entries_4_update:
         db_con.update_entry_updated_at(entry)
 
     # handle languages
+    log.info("Detecting languages for new entities...")
     detected_languages = handler.detect_lang(new_rss_data)
     existing_languages = db_con.get_all_languages()
     for language in detected_languages:
         db_con.create_language_if_not_existent(language, existing_languages)
+    log.info("Language detection complete.")
 
     # handle tags
+    log.info("Determining tags for new entities...")
     determined_tags = handler.determine_tags(new_rss_data)
     existing_tags = db_con.get_all_tags()
     for tag in determined_tags:
         db_con.create_tag_if_not_existent(tag, existing_tags)
+    log.info("Tag determination complete.")
 
+    log.info("Build and persist new entities...")
     updated_languages = db_con.get_all_languages()
     updated_tags = db_con.get_all_tags()
     new_entries = handler.build_new_entries(new_rss_data, updated_tags, updated_languages)
@@ -66,6 +77,7 @@ def execute_crawler(uuid):
     for entry in new_entries:
         db_con.create_entry(entry)
 
+    log.info("Crawled and persisted " + str(len(new_entries)) + " rss feed elements!")
     return custom_response("Crawled and persisted " + str(len(new_entries)) + " rss feed elements!", 200)
 
 
