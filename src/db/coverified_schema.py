@@ -1383,12 +1383,12 @@ class Organization(sgqlc.types.Type):
 class Query(sgqlc.types.Type):
     __schema__ = coverified_schema
     __field_names__ = (
-        'all_organizations', 'organization', '_all_organizations_meta', '__organizations_meta', 'all_tags', 'tag',
-        '_all_tags_meta', '__tags_meta', 'all_languages', 'language', '_all_languages_meta', '__languages_meta',
-        'all_geo_locations', 'geo_location', '_all_geo_locations_meta', '__geo_locations_meta', 'all_sources', 'source',
-        '_all_sources_meta', '__sources_meta', 'all_widgets', 'widget', '_all_widgets_meta', '__widgets_meta',
-        'all_entries', 'entry', '_all_entries_meta', '__entries_meta', 'all_users', 'user', '_all_users_meta',
-        '__users_meta', '_ks_lists_meta', 'app_version', 'authenticated_user')
+        'all_organizations', 'organization', '_all_organizations_meta', 'all_tags', 'tag',
+        '_all_tags_meta', 'all_languages', 'language', '_all_languages_meta',
+        'all_geo_locations', 'geo_location', '_all_geo_locations_meta',  'all_sources', 'source',
+        '_all_sources_meta',  'all_widgets', 'widget', '_all_widgets_meta',
+        'all_entries', 'entry', '_all_entries_meta',  'all_users', 'user', '_all_users_meta',
+       '_ks_lists_meta', 'app_version', 'authenticated_user')
     all_organizations = sgqlc.types.Field(sgqlc.types.list_of('Organization'), graphql_name='allOrganizations',
                                           args=sgqlc.types.ArgDict((
                                               ('where', sgqlc.types.Arg(OrganizationWhereInput, graphql_name='where',
