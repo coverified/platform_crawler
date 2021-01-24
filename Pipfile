@@ -20,7 +20,6 @@ flask-limiter = "*"
 gunicorn = "*"
 psycopg2 = "*"
 gql = "*"
-python-graphql-client = "*"
 sgqlc = "*"
 langdetect = "*"
 
