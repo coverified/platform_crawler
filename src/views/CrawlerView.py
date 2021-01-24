@@ -3,6 +3,9 @@
 import os
 import datetime as dt
 from datetime import timedelta
+
+from typing import List, Dict
+
 from src.app import log
 
 from ..crawler.EntryHandler import EntryHandler
@@ -27,14 +30,20 @@ def execute_crawler(uuid):
     if not (api_url):
         return custom_response("API url not provided. Cannot crawl and persist data!", 400)
 
-    # crawl data
-    rss_data_list = crawl_data()
-
     # get entry handler
     handler = EntryHandler()
 
     # create connection to graphQL api
     db_con = GraphQLConnector(api_url=api_url)
+
+    # get all data sources
+    log.info("Try to get sources for new entities ...")
+    sources = db_con.get_all_sources()
+    log.info("Need to check " + str(len(sources)) + " sources.")
+
+    # crawl sources
+    from feedparser import FeedParserDict
+    rss_data_list: Dict[str, List[FeedParserDict]] = crawl_data(sources)
 
     # get all existent entries that has been updated within the last 24h
     log.info("Try to get existing entries with time delta 24h from " + api_url + "...")
@@ -47,7 +56,8 @@ def execute_crawler(uuid):
     log.info("Determining new rss data and data that needs to be updated...")
     new_rss_data, existing_entries_4_update = handler.filter_duplicates(rss_data_list, existing_entries)
     log.info(
-        "Entities to be updated: " + str(len(existing_entries_4_update)) + "; New entities: " + str(len(new_rss_data)))
+        "Entities to be updated: " + str(len(existing_entries_4_update)) + "; New entities: "
+        + str(len([item for sublist in list(new_rss_data.values()) for item in sublist])))
 
     for entry in existing_entries_4_update:
         db_con.update_entry_updated_at(entry)
@@ -71,13 +81,15 @@ def execute_crawler(uuid):
     log.info("Build and persist new entities...")
     updated_languages = db_con.get_all_languages()
     updated_tags = db_con.get_all_tags()
-    new_entries = handler.build_new_entries(new_rss_data, updated_tags, updated_languages)
+    new_entries = handler.build_new_entries(new_rss_data, updated_tags, updated_languages, sources)
 
     # persist new entries
-    for entry in new_entries:
-        db_con.create_entry(entry)
+    for entry_set in new_entries:
+        for entry in entry_set:
+            db_con.create_entry(entry)
 
-    log.info("Crawled and persisted " + str(len(new_entries)) + " rss feed elements!")
+    log.info("Crawled and persisted " + str(
+        len([item for sublist in new_entries for item in sublist])) + " rss feed elements!")
     return custom_response("Crawled and persisted " + str(len(new_entries)) + " rss feed elements!", 200)
 
 

@@ -4,7 +4,7 @@ from sgqlc.endpoint.http import HTTPEndpoint
 from sgqlc.operation import Operation
 
 from src.db.coverified_schema import coverified_schema as schema, LanguageCreateInput, TagCreateInput, \
-    EntryWhereInput, EntryUpdateInput
+    EntryWhereInput, EntryUpdateInput, SourceWhereInput
 from src.app import log
 
 
@@ -82,6 +82,13 @@ class GraphQLConnector:
         mutation = self.__get_mutation()
         mutation.create_entry(data=entry_input_data)
         self.http_endpoint(mutation)
+
+    def get_all_sources(self):
+        query = self.__get_query()
+        query.all_sources()
+        log.debug(query)
+        data = self.http_endpoint(query)
+        return (query + data).all_sources
 
     @staticmethod
     def __get_mutation():

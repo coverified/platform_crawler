@@ -17,6 +17,7 @@ from flask_limiter.util import get_remote_address
 
 import configparser
 
+
 def create_app(env_name):
     """
     Create app
@@ -46,8 +47,7 @@ def create_app(env_name):
 
     # start the crawler
     keywords = json.loads(config.get("crawler", "keywords"))
-    feeds = json.loads(config.get("crawler", "feeds"))
-    create_crawler(keywords, feeds)
+    create_crawler(keywords)
 
     # limit the number of api calls
     Limiter(
