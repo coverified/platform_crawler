@@ -29,11 +29,9 @@ class JSON(sgqlc.types.Scalar):
 
 class SortEntriesBy(sgqlc.types.Enum):
     __schema__ = coverified_schema
-    __choices__ = (
-        'id_ASC', 'id_DESC', 'publishDate_ASC', 'publishDate_DESC', 'title_ASC', 'title_DESC', 'image_ASC',
-        'image_DESC',
-        'content_ASC', 'content_DESC', 'url_ASC', 'url_DESC', 'tags_ASC', 'tags_DESC', 'language_ASC', 'language_DESC',
-        'source_ASC', 'source_DESC', 'updatedAt_ASC', 'updatedAt_DESC', 'createdAt_ASC', 'createdAt_DESC')
+    __choices__ = ('id_ASC', 'id_DESC', 'publishDate_ASC', 'publishDate_DESC', 'title_ASC', 'title_DESC', 'content_ASC',
+                   'content_DESC', 'url_ASC', 'url_DESC', 'tags_ASC', 'tags_DESC', 'language_ASC', 'language_DESC',
+                   'source_ASC', 'source_DESC', 'updatedAt_ASC', 'updatedAt_DESC', 'createdAt_ASC', 'createdAt_DESC')
 
 
 class SortGeoLocationsBy(sgqlc.types.Enum):
@@ -60,14 +58,15 @@ class SortOrganizationsBy(sgqlc.types.Enum):
 class SortSourcesBy(sgqlc.types.Enum):
     __schema__ = coverified_schema
     __choices__ = ('id_ASC', 'id_DESC', 'name_ASC', 'name_DESC', 'url_ASC', 'url_DESC', 'location_ASC', 'location_DESC',
-                   'updatedAt_ASC', 'updatedAt_DESC', 'createdAt_ASC', 'createdAt_DESC')
+                   'description_ASC', 'description_DESC', 'updatedAt_ASC', 'updatedAt_DESC', 'createdAt_ASC',
+                   'createdAt_DESC')
 
 
 class SortTagsBy(sgqlc.types.Enum):
     __schema__ = coverified_schema
-    __choices__ = (
-        'id_ASC', 'id_DESC', 'name_ASC', 'name_DESC', 'updatedAt_ASC', 'updatedAt_DESC', 'createdAt_ASC',
-        'createdAt_DESC')
+    __choices__ = ('id_ASC', 'id_DESC', 'name_ASC', 'name_DESC', 'language_ASC', 'language_DESC', 'description_ASC',
+                   'description_DESC', 'relevance_ASC', 'relevance_DESC', 'updatedAt_ASC', 'updatedAt_DESC',
+                   'createdAt_ASC', 'createdAt_DESC')
 
 
 class SortUsersBy(sgqlc.types.Enum):
@@ -95,6 +94,44 @@ class Upload(sgqlc.types.Scalar):
 ########################################################################
 # Input Objects
 ########################################################################
+class CloudinaryImageFormat(sgqlc.types.Input):
+    __schema__ = coverified_schema
+    __field_names__ = (
+        'pretty_name', 'width', 'height', 'crop', 'aspect_ratio', 'gravity', 'zoom', 'x', 'y', 'format', 'fetch_format',
+        'quality', 'radius', 'angle', 'effect', 'opacity', 'border', 'background', 'overlay', 'underlay',
+        'default_image',
+        'delay', 'color', 'color_space', 'dpr', 'page', 'density', 'flags', 'transformation')
+    pretty_name = sgqlc.types.Field(String, graphql_name='prettyName')
+    width = sgqlc.types.Field(String, graphql_name='width')
+    height = sgqlc.types.Field(String, graphql_name='height')
+    crop = sgqlc.types.Field(String, graphql_name='crop')
+    aspect_ratio = sgqlc.types.Field(String, graphql_name='aspect_ratio')
+    gravity = sgqlc.types.Field(String, graphql_name='gravity')
+    zoom = sgqlc.types.Field(String, graphql_name='zoom')
+    x = sgqlc.types.Field(String, graphql_name='x')
+    y = sgqlc.types.Field(String, graphql_name='y')
+    format = sgqlc.types.Field(String, graphql_name='format')
+    fetch_format = sgqlc.types.Field(String, graphql_name='fetch_format')
+    quality = sgqlc.types.Field(String, graphql_name='quality')
+    radius = sgqlc.types.Field(String, graphql_name='radius')
+    angle = sgqlc.types.Field(String, graphql_name='angle')
+    effect = sgqlc.types.Field(String, graphql_name='effect')
+    opacity = sgqlc.types.Field(String, graphql_name='opacity')
+    border = sgqlc.types.Field(String, graphql_name='border')
+    background = sgqlc.types.Field(String, graphql_name='background')
+    overlay = sgqlc.types.Field(String, graphql_name='overlay')
+    underlay = sgqlc.types.Field(String, graphql_name='underlay')
+    default_image = sgqlc.types.Field(String, graphql_name='default_image')
+    delay = sgqlc.types.Field(String, graphql_name='delay')
+    color = sgqlc.types.Field(String, graphql_name='color')
+    color_space = sgqlc.types.Field(String, graphql_name='color_space')
+    dpr = sgqlc.types.Field(String, graphql_name='dpr')
+    page = sgqlc.types.Field(String, graphql_name='page')
+    density = sgqlc.types.Field(String, graphql_name='density')
+    flags = sgqlc.types.Field(String, graphql_name='flags')
+    transformation = sgqlc.types.Field(String, graphql_name='transformation')
+
+
 class EntriesCreateInput(sgqlc.types.Input):
     __schema__ = coverified_schema
     __field_names__ = ('data',)
@@ -113,7 +150,7 @@ class EntryCreateInput(sgqlc.types.Input):
     __field_names__ = ('publish_date', 'title', 'image', 'content', 'url', 'tags', 'language', 'source')
     publish_date = sgqlc.types.Field(String, graphql_name='publishDate')
     title = sgqlc.types.Field(String, graphql_name='title')
-    image = sgqlc.types.Field(String, graphql_name='image')
+    image = sgqlc.types.Field(Upload, graphql_name='image')
     content = sgqlc.types.Field(String, graphql_name='content')
     url = sgqlc.types.Field(String, graphql_name='url')
     tags = sgqlc.types.Field('TagRelateToManyInput', graphql_name='tags')
@@ -126,7 +163,7 @@ class EntryUpdateInput(sgqlc.types.Input):
     __field_names__ = ('publish_date', 'title', 'image', 'content', 'url', 'tags', 'language', 'source')
     publish_date = sgqlc.types.Field(String, graphql_name='publishDate')
     title = sgqlc.types.Field(String, graphql_name='title')
-    image = sgqlc.types.Field(String, graphql_name='image')
+    image = sgqlc.types.Field(Upload, graphql_name='image')
     content = sgqlc.types.Field(String, graphql_name='content')
     url = sgqlc.types.Field(String, graphql_name='url')
     tags = sgqlc.types.Field('TagRelateToManyInput', graphql_name='tags')
@@ -142,18 +179,15 @@ class EntryWhereInput(sgqlc.types.Input):
         'title_not', 'title_contains', 'title_not_contains', 'title_starts_with', 'title_not_starts_with',
         'title_ends_with', 'title_not_ends_with', 'title_i', 'title_not_i', 'title_contains_i', 'title_not_contains_i',
         'title_starts_with_i', 'title_not_starts_with_i', 'title_ends_with_i', 'title_not_ends_with_i', 'title_in',
-        'title_not_in', 'image', 'image_not', 'image_contains', 'image_not_contains', 'image_starts_with',
-        'image_not_starts_with', 'image_ends_with', 'image_not_ends_with', 'image_i', 'image_not_i', 'image_contains_i',
-        'image_not_contains_i', 'image_starts_with_i', 'image_not_starts_with_i', 'image_ends_with_i',
-        'image_not_ends_with_i', 'image_in', 'image_not_in', 'content', 'content_not', 'content_contains',
+        'title_not_in', 'image', 'image_not', 'image_in', 'image_not_in', 'content', 'content_not', 'content_contains',
         'content_not_contains', 'content_starts_with', 'content_not_starts_with', 'content_ends_with',
         'content_not_ends_with', 'content_i', 'content_not_i', 'content_contains_i', 'content_not_contains_i',
         'content_starts_with_i', 'content_not_starts_with_i', 'content_ends_with_i', 'content_not_ends_with_i',
         'content_in', 'content_not_in', 'url', 'url_not', 'url_contains', 'url_not_contains', 'url_starts_with',
         'url_not_starts_with', 'url_ends_with', 'url_not_ends_with', 'url_i', 'url_not_i', 'url_contains_i',
         'url_not_contains_i', 'url_starts_with_i', 'url_not_starts_with_i', 'url_ends_with_i', 'url_not_ends_with_i',
-        'url_in', 'url_not_in', 'tags_every', 'tags_some', 'tags_none', 'tags_is_null', 'language', 'language_is_null',
-        'source', 'source_is_null', 'updated_at', 'updated_at_not', 'updated_at_lt', 'updated_at_lte', 'updated_at_gt',
+        'url_in', 'url_not_in', 'tags_every', 'tags_some', 'tags_none', 'language', 'language_is_null', 'source',
+        'source_is_null', 'updated_at', 'updated_at_not', 'updated_at_lt', 'updated_at_lte', 'updated_at_gt',
         'updated_at_gte', 'updated_at_in', 'updated_at_not_in', 'created_at', 'created_at_not', 'created_at_lt',
         'created_at_lte', 'created_at_gt', 'created_at_gte', 'created_at_in', 'created_at_not_in')
     and_ = sgqlc.types.Field(sgqlc.types.list_of('EntryWhereInput'), graphql_name='AND')
@@ -190,20 +224,6 @@ class EntryWhereInput(sgqlc.types.Input):
     title_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='title_not_in')
     image = sgqlc.types.Field(String, graphql_name='image')
     image_not = sgqlc.types.Field(String, graphql_name='image_not')
-    image_contains = sgqlc.types.Field(String, graphql_name='image_contains')
-    image_not_contains = sgqlc.types.Field(String, graphql_name='image_not_contains')
-    image_starts_with = sgqlc.types.Field(String, graphql_name='image_starts_with')
-    image_not_starts_with = sgqlc.types.Field(String, graphql_name='image_not_starts_with')
-    image_ends_with = sgqlc.types.Field(String, graphql_name='image_ends_with')
-    image_not_ends_with = sgqlc.types.Field(String, graphql_name='image_not_ends_with')
-    image_i = sgqlc.types.Field(String, graphql_name='image_i')
-    image_not_i = sgqlc.types.Field(String, graphql_name='image_not_i')
-    image_contains_i = sgqlc.types.Field(String, graphql_name='image_contains_i')
-    image_not_contains_i = sgqlc.types.Field(String, graphql_name='image_not_contains_i')
-    image_starts_with_i = sgqlc.types.Field(String, graphql_name='image_starts_with_i')
-    image_not_starts_with_i = sgqlc.types.Field(String, graphql_name='image_not_starts_with_i')
-    image_ends_with_i = sgqlc.types.Field(String, graphql_name='image_ends_with_i')
-    image_not_ends_with_i = sgqlc.types.Field(String, graphql_name='image_not_ends_with_i')
     image_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='image_in')
     image_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='image_not_in')
     content = sgqlc.types.Field(String, graphql_name='content')
@@ -245,7 +265,6 @@ class EntryWhereInput(sgqlc.types.Input):
     tags_every = sgqlc.types.Field('TagWhereInput', graphql_name='tags_every')
     tags_some = sgqlc.types.Field('TagWhereInput', graphql_name='tags_some')
     tags_none = sgqlc.types.Field('TagWhereInput', graphql_name='tags_none')
-    tags_is_null = sgqlc.types.Field(Boolean, graphql_name='tags_is_null')
     language = sgqlc.types.Field('LanguageWhereInput', graphql_name='language')
     language_is_null = sgqlc.types.Field(Boolean, graphql_name='language_is_null')
     source = sgqlc.types.Field('SourceWhereInput', graphql_name='source')
@@ -305,13 +324,11 @@ class GeoLocationWhereInput(sgqlc.types.Input):
         'and_', 'or_', 'id', 'id_not', 'id_in', 'id_not_in', 'name', 'name_not', 'name_contains', 'name_not_contains',
         'name_starts_with', 'name_not_starts_with', 'name_ends_with', 'name_not_ends_with', 'name_i', 'name_not_i',
         'name_contains_i', 'name_not_contains_i', 'name_starts_with_i', 'name_not_starts_with_i', 'name_ends_with_i',
-        'name_not_ends_with_i', 'name_in', 'name_not_in', 'location', 'location_not', 'location_contains',
-        'location_not_contains', 'location_starts_with', 'location_not_starts_with', 'location_ends_with',
-        'location_not_ends_with', 'location_in', 'location_not_in', 'radius', 'radius_not', 'radius_lt', 'radius_lte',
-        'radius_gt', 'radius_gte', 'radius_in', 'radius_not_in', 'updated_at', 'updated_at_not', 'updated_at_lt',
-        'updated_at_lte', 'updated_at_gt', 'updated_at_gte', 'updated_at_in', 'updated_at_not_in', 'created_at',
-        'created_at_not', 'created_at_lt', 'created_at_lte', 'created_at_gt', 'created_at_gte', 'created_at_in',
-        'created_at_not_in')
+        'name_not_ends_with_i', 'name_in', 'name_not_in', 'location', 'location_not', 'location_in', 'location_not_in',
+        'radius', 'radius_not', 'radius_lt', 'radius_lte', 'radius_gt', 'radius_gte', 'radius_in', 'radius_not_in',
+        'updated_at', 'updated_at_not', 'updated_at_lt', 'updated_at_lte', 'updated_at_gt', 'updated_at_gte',
+        'updated_at_in', 'updated_at_not_in', 'created_at', 'created_at_not', 'created_at_lt', 'created_at_lte',
+        'created_at_gt', 'created_at_gte', 'created_at_in', 'created_at_not_in')
     and_ = sgqlc.types.Field(sgqlc.types.list_of('GeoLocationWhereInput'), graphql_name='AND')
     or_ = sgqlc.types.Field(sgqlc.types.list_of('GeoLocationWhereInput'), graphql_name='OR')
     id = sgqlc.types.Field(ID, graphql_name='id')
@@ -338,12 +355,6 @@ class GeoLocationWhereInput(sgqlc.types.Input):
     name_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='name_not_in')
     location = sgqlc.types.Field(String, graphql_name='location')
     location_not = sgqlc.types.Field(String, graphql_name='location_not')
-    location_contains = sgqlc.types.Field(String, graphql_name='location_contains')
-    location_not_contains = sgqlc.types.Field(String, graphql_name='location_not_contains')
-    location_starts_with = sgqlc.types.Field(String, graphql_name='location_starts_with')
-    location_not_starts_with = sgqlc.types.Field(String, graphql_name='location_not_starts_with')
-    location_ends_with = sgqlc.types.Field(String, graphql_name='location_ends_with')
-    location_not_ends_with = sgqlc.types.Field(String, graphql_name='location_not_ends_with')
     location_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='location_in')
     location_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='location_not_in')
     radius = sgqlc.types.Field(Float, graphql_name='radius')
@@ -577,10 +588,11 @@ class OrganizationsUpdateInput(sgqlc.types.Input):
 
 class SourceCreateInput(sgqlc.types.Input):
     __schema__ = coverified_schema
-    __field_names__ = ('name', 'url', 'location')
+    __field_names__ = ('name', 'url', 'location', 'description')
     name = sgqlc.types.Field(String, graphql_name='name')
     url = sgqlc.types.Field(String, graphql_name='url')
     location = sgqlc.types.Field(GeoLocationRelateToOneInput, graphql_name='location')
+    description = sgqlc.types.Field(String, graphql_name='description')
 
 
 class SourceRelateToManyInput(sgqlc.types.Input):
@@ -603,10 +615,11 @@ class SourceRelateToOneInput(sgqlc.types.Input):
 
 class SourceUpdateInput(sgqlc.types.Input):
     __schema__ = coverified_schema
-    __field_names__ = ('name', 'url', 'location')
+    __field_names__ = ('name', 'url', 'location', 'description')
     name = sgqlc.types.Field(String, graphql_name='name')
     url = sgqlc.types.Field(String, graphql_name='url')
     location = sgqlc.types.Field(GeoLocationRelateToOneInput, graphql_name='location')
+    description = sgqlc.types.Field(String, graphql_name='description')
 
 
 class SourceWhereInput(sgqlc.types.Input):
@@ -618,10 +631,14 @@ class SourceWhereInput(sgqlc.types.Input):
         'name_not_ends_with_i', 'name_in', 'name_not_in', 'url', 'url_not', 'url_contains', 'url_not_contains',
         'url_starts_with', 'url_not_starts_with', 'url_ends_with', 'url_not_ends_with', 'url_i', 'url_not_i',
         'url_contains_i', 'url_not_contains_i', 'url_starts_with_i', 'url_not_starts_with_i', 'url_ends_with_i',
-        'url_not_ends_with_i', 'url_in', 'url_not_in', 'location', 'location_is_null', 'updated_at', 'updated_at_not',
-        'updated_at_lt', 'updated_at_lte', 'updated_at_gt', 'updated_at_gte', 'updated_at_in', 'updated_at_not_in',
-        'created_at', 'created_at_not', 'created_at_lt', 'created_at_lte', 'created_at_gt', 'created_at_gte',
-        'created_at_in', 'created_at_not_in')
+        'url_not_ends_with_i', 'url_in', 'url_not_in', 'location', 'location_is_null', 'description', 'description_not',
+        'description_contains', 'description_not_contains', 'description_starts_with', 'description_not_starts_with',
+        'description_ends_with', 'description_not_ends_with', 'description_i', 'description_not_i',
+        'description_contains_i', 'description_not_contains_i', 'description_starts_with_i',
+        'description_not_starts_with_i', 'description_ends_with_i', 'description_not_ends_with_i', 'description_in',
+        'description_not_in', 'updated_at', 'updated_at_not', 'updated_at_lt', 'updated_at_lte', 'updated_at_gt',
+        'updated_at_gte', 'updated_at_in', 'updated_at_not_in', 'created_at', 'created_at_not', 'created_at_lt',
+        'created_at_lte', 'created_at_gt', 'created_at_gte', 'created_at_in', 'created_at_not_in')
     and_ = sgqlc.types.Field(sgqlc.types.list_of('SourceWhereInput'), graphql_name='AND')
     or_ = sgqlc.types.Field(sgqlc.types.list_of('SourceWhereInput'), graphql_name='OR')
     id = sgqlc.types.Field(ID, graphql_name='id')
@@ -666,6 +683,24 @@ class SourceWhereInput(sgqlc.types.Input):
     url_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='url_not_in')
     location = sgqlc.types.Field(GeoLocationWhereInput, graphql_name='location')
     location_is_null = sgqlc.types.Field(Boolean, graphql_name='location_is_null')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    description_not = sgqlc.types.Field(String, graphql_name='description_not')
+    description_contains = sgqlc.types.Field(String, graphql_name='description_contains')
+    description_not_contains = sgqlc.types.Field(String, graphql_name='description_not_contains')
+    description_starts_with = sgqlc.types.Field(String, graphql_name='description_starts_with')
+    description_not_starts_with = sgqlc.types.Field(String, graphql_name='description_not_starts_with')
+    description_ends_with = sgqlc.types.Field(String, graphql_name='description_ends_with')
+    description_not_ends_with = sgqlc.types.Field(String, graphql_name='description_not_ends_with')
+    description_i = sgqlc.types.Field(String, graphql_name='description_i')
+    description_not_i = sgqlc.types.Field(String, graphql_name='description_not_i')
+    description_contains_i = sgqlc.types.Field(String, graphql_name='description_contains_i')
+    description_not_contains_i = sgqlc.types.Field(String, graphql_name='description_not_contains_i')
+    description_starts_with_i = sgqlc.types.Field(String, graphql_name='description_starts_with_i')
+    description_not_starts_with_i = sgqlc.types.Field(String, graphql_name='description_not_starts_with_i')
+    description_ends_with_i = sgqlc.types.Field(String, graphql_name='description_ends_with_i')
+    description_not_ends_with_i = sgqlc.types.Field(String, graphql_name='description_not_ends_with_i')
+    description_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='description_in')
+    description_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='description_not_in')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     updated_at_not = sgqlc.types.Field(DateTime, graphql_name='updatedAt_not')
     updated_at_lt = sgqlc.types.Field(DateTime, graphql_name='updatedAt_lt')
@@ -705,8 +740,12 @@ class SourcesUpdateInput(sgqlc.types.Input):
 
 class TagCreateInput(sgqlc.types.Input):
     __schema__ = coverified_schema
-    __field_names__ = ('name',)
+    __field_names__ = ('name', 'language', 'description', 'relevance', 'image')
     name = sgqlc.types.Field(String, graphql_name='name')
+    language = sgqlc.types.Field(LanguageRelateToOneInput, graphql_name='language')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    relevance = sgqlc.types.Field(Int, graphql_name='relevance')
+    image = sgqlc.types.Field(Upload, graphql_name='image')
 
 
 class TagRelateToManyInput(sgqlc.types.Input):
@@ -720,8 +759,12 @@ class TagRelateToManyInput(sgqlc.types.Input):
 
 class TagUpdateInput(sgqlc.types.Input):
     __schema__ = coverified_schema
-    __field_names__ = ('name',)
+    __field_names__ = ('name', 'language', 'description', 'relevance', 'image')
     name = sgqlc.types.Field(String, graphql_name='name')
+    language = sgqlc.types.Field(LanguageRelateToOneInput, graphql_name='language')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    relevance = sgqlc.types.Field(Int, graphql_name='relevance')
+    image = sgqlc.types.Field(Upload, graphql_name='image')
 
 
 class TagWhereInput(sgqlc.types.Input):
@@ -730,10 +773,18 @@ class TagWhereInput(sgqlc.types.Input):
         'and_', 'or_', 'id', 'id_not', 'id_in', 'id_not_in', 'name', 'name_not', 'name_contains', 'name_not_contains',
         'name_starts_with', 'name_not_starts_with', 'name_ends_with', 'name_not_ends_with', 'name_i', 'name_not_i',
         'name_contains_i', 'name_not_contains_i', 'name_starts_with_i', 'name_not_starts_with_i', 'name_ends_with_i',
-        'name_not_ends_with_i', 'name_in', 'name_not_in', 'updated_at', 'updated_at_not', 'updated_at_lt',
-        'updated_at_lte',
-        'updated_at_gt', 'updated_at_gte', 'updated_at_in', 'updated_at_not_in', 'created_at', 'created_at_not',
-        'created_at_lt', 'created_at_lte', 'created_at_gt', 'created_at_gte', 'created_at_in', 'created_at_not_in')
+        'name_not_ends_with_i', 'name_in', 'name_not_in', 'language', 'language_is_null', 'description',
+        'description_not',
+        'description_contains', 'description_not_contains', 'description_starts_with', 'description_not_starts_with',
+        'description_ends_with', 'description_not_ends_with', 'description_i', 'description_not_i',
+        'description_contains_i', 'description_not_contains_i', 'description_starts_with_i',
+        'description_not_starts_with_i', 'description_ends_with_i', 'description_not_ends_with_i', 'description_in',
+        'description_not_in', 'relevance', 'relevance_not', 'relevance_lt', 'relevance_lte', 'relevance_gt',
+        'relevance_gte', 'relevance_in', 'relevance_not_in', 'image', 'image_not', 'image_in', 'image_not_in',
+        'updated_at',
+        'updated_at_not', 'updated_at_lt', 'updated_at_lte', 'updated_at_gt', 'updated_at_gte', 'updated_at_in',
+        'updated_at_not_in', 'created_at', 'created_at_not', 'created_at_lt', 'created_at_lte', 'created_at_gt',
+        'created_at_gte', 'created_at_in', 'created_at_not_in')
     and_ = sgqlc.types.Field(sgqlc.types.list_of('TagWhereInput'), graphql_name='AND')
     or_ = sgqlc.types.Field(sgqlc.types.list_of('TagWhereInput'), graphql_name='OR')
     id = sgqlc.types.Field(ID, graphql_name='id')
@@ -758,6 +809,38 @@ class TagWhereInput(sgqlc.types.Input):
     name_not_ends_with_i = sgqlc.types.Field(String, graphql_name='name_not_ends_with_i')
     name_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='name_in')
     name_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='name_not_in')
+    language = sgqlc.types.Field(LanguageWhereInput, graphql_name='language')
+    language_is_null = sgqlc.types.Field(Boolean, graphql_name='language_is_null')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    description_not = sgqlc.types.Field(String, graphql_name='description_not')
+    description_contains = sgqlc.types.Field(String, graphql_name='description_contains')
+    description_not_contains = sgqlc.types.Field(String, graphql_name='description_not_contains')
+    description_starts_with = sgqlc.types.Field(String, graphql_name='description_starts_with')
+    description_not_starts_with = sgqlc.types.Field(String, graphql_name='description_not_starts_with')
+    description_ends_with = sgqlc.types.Field(String, graphql_name='description_ends_with')
+    description_not_ends_with = sgqlc.types.Field(String, graphql_name='description_not_ends_with')
+    description_i = sgqlc.types.Field(String, graphql_name='description_i')
+    description_not_i = sgqlc.types.Field(String, graphql_name='description_not_i')
+    description_contains_i = sgqlc.types.Field(String, graphql_name='description_contains_i')
+    description_not_contains_i = sgqlc.types.Field(String, graphql_name='description_not_contains_i')
+    description_starts_with_i = sgqlc.types.Field(String, graphql_name='description_starts_with_i')
+    description_not_starts_with_i = sgqlc.types.Field(String, graphql_name='description_not_starts_with_i')
+    description_ends_with_i = sgqlc.types.Field(String, graphql_name='description_ends_with_i')
+    description_not_ends_with_i = sgqlc.types.Field(String, graphql_name='description_not_ends_with_i')
+    description_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='description_in')
+    description_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='description_not_in')
+    relevance = sgqlc.types.Field(Int, graphql_name='relevance')
+    relevance_not = sgqlc.types.Field(Int, graphql_name='relevance_not')
+    relevance_lt = sgqlc.types.Field(Int, graphql_name='relevance_lt')
+    relevance_lte = sgqlc.types.Field(Int, graphql_name='relevance_lte')
+    relevance_gt = sgqlc.types.Field(Int, graphql_name='relevance_gt')
+    relevance_gte = sgqlc.types.Field(Int, graphql_name='relevance_gte')
+    relevance_in = sgqlc.types.Field(sgqlc.types.list_of(Int), graphql_name='relevance_in')
+    relevance_not_in = sgqlc.types.Field(sgqlc.types.list_of(Int), graphql_name='relevance_not_in')
+    image = sgqlc.types.Field(String, graphql_name='image')
+    image_not = sgqlc.types.Field(String, graphql_name='image_not')
+    image_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='image_in')
+    image_not_in = sgqlc.types.Field(sgqlc.types.list_of(String), graphql_name='image_not_in')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     updated_at_not = sgqlc.types.Field(DateTime, graphql_name='updatedAt_not')
     updated_at_lt = sgqlc.types.Field(DateTime, graphql_name='updatedAt_lt')
@@ -940,10 +1023,10 @@ class WidgetWhereInput(sgqlc.types.Input):
         'name_starts_with', 'name_not_starts_with', 'name_ends_with', 'name_not_ends_with', 'name_i', 'name_not_i',
         'name_contains_i', 'name_not_contains_i', 'name_starts_with_i', 'name_not_starts_with_i', 'name_ends_with_i',
         'name_not_ends_with_i', 'name_in', 'name_not_in', 'organization', 'organization_is_null', 'language',
-        'language_is_null', 'sources_every', 'sources_some', 'sources_none', 'sources_is_null', 'updated_at',
-        'updated_at_not', 'updated_at_lt', 'updated_at_lte', 'updated_at_gt', 'updated_at_gte', 'updated_at_in',
-        'updated_at_not_in', 'created_at', 'created_at_not', 'created_at_lt', 'created_at_lte', 'created_at_gt',
-        'created_at_gte', 'created_at_in', 'created_at_not_in')
+        'language_is_null', 'sources_every', 'sources_some', 'sources_none', 'updated_at', 'updated_at_not',
+        'updated_at_lt', 'updated_at_lte', 'updated_at_gt', 'updated_at_gte', 'updated_at_in', 'updated_at_not_in',
+        'created_at', 'created_at_not', 'created_at_lt', 'created_at_lte', 'created_at_gt', 'created_at_gte',
+        'created_at_in', 'created_at_not_in')
     and_ = sgqlc.types.Field(sgqlc.types.list_of('WidgetWhereInput'), graphql_name='AND')
     or_ = sgqlc.types.Field(sgqlc.types.list_of('WidgetWhereInput'), graphql_name='OR')
     id = sgqlc.types.Field(ID, graphql_name='id')
@@ -975,7 +1058,6 @@ class WidgetWhereInput(sgqlc.types.Input):
     sources_every = sgqlc.types.Field(SourceWhereInput, graphql_name='sources_every')
     sources_some = sgqlc.types.Field(SourceWhereInput, graphql_name='sources_some')
     sources_none = sgqlc.types.Field(SourceWhereInput, graphql_name='sources_none')
-    sources_is_null = sgqlc.types.Field(Boolean, graphql_name='sources_is_null')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     updated_at_not = sgqlc.types.Field(DateTime, graphql_name='updatedAt_not')
     updated_at_lt = sgqlc.types.Field(DateTime, graphql_name='updatedAt_lt')
@@ -1029,27 +1111,45 @@ class _ksListsMetaInput(sgqlc.types.Input):
 ########################################################################
 # Output Objects and Interfaces
 ########################################################################
+class CloudinaryImage_File(sgqlc.types.Type):
+    __schema__ = coverified_schema
+    __field_names__ = (
+        'id', 'path', 'filename', 'original_filename', 'mimetype', 'encoding', 'public_url', 'public_url_transformed')
+    id = sgqlc.types.Field(ID, graphql_name='id')
+    path = sgqlc.types.Field(String, graphql_name='path')
+    filename = sgqlc.types.Field(String, graphql_name='filename')
+    original_filename = sgqlc.types.Field(String, graphql_name='originalFilename')
+    mimetype = sgqlc.types.Field(String, graphql_name='mimetype')
+    encoding = sgqlc.types.Field(String, graphql_name='encoding')
+    public_url = sgqlc.types.Field(String, graphql_name='publicUrl')
+    public_url_transformed = sgqlc.types.Field(String, graphql_name='publicUrlTransformed', args=sgqlc.types.ArgDict((
+        ('transformation', sgqlc.types.Arg(CloudinaryImageFormat, graphql_name='transformation', default=None)),
+    ))
+                                               )
+
+
 class Entry(sgqlc.types.Type):
     __schema__ = coverified_schema
     __field_names__ = (
         '_label_', 'id', 'publish_date', 'title', 'image', 'content', 'url', 'tags', '_tags_meta', 'language', 'source',
         'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     publish_date = sgqlc.types.Field(String, graphql_name='publishDate')
     title = sgqlc.types.Field(String, graphql_name='title')
-    image = sgqlc.types.Field(String, graphql_name='image')
+    image = sgqlc.types.Field(CloudinaryImage_File, graphql_name='image')
     content = sgqlc.types.Field(String, graphql_name='content')
     url = sgqlc.types.Field(String, graphql_name='url')
-    tags = sgqlc.types.Field(sgqlc.types.list_of('Tag'), graphql_name='tags', args=sgqlc.types.ArgDict((
-        ('where', sgqlc.types.Arg(TagWhereInput, graphql_name='where', default=None)),
-        ('search', sgqlc.types.Arg(String, graphql_name='search', default=None)),
-        ('sort_by',
-         sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(SortTagsBy)), graphql_name='sortBy', default=None)),
-        ('order_by', sgqlc.types.Arg(String, graphql_name='orderBy', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
-    ))
+    tags = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null('Tag'))),
+                             graphql_name='tags', args=sgqlc.types.ArgDict((
+            ('where', sgqlc.types.Arg(TagWhereInput, graphql_name='where', default=None)),
+            ('search', sgqlc.types.Arg(String, graphql_name='search', default=None)),
+            ('sort_by', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(SortTagsBy)), graphql_name='sortBy',
+                                        default=None)),
+            ('order_by', sgqlc.types.Arg(String, graphql_name='orderBy', default=None)),
+            ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+            ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
+        ))
                              )
     _tags_meta = sgqlc.types.Field('_QueryMeta', graphql_name='_tagsMeta', args=sgqlc.types.ArgDict((
         ('where', sgqlc.types.Arg(TagWhereInput, graphql_name='where', default=None)),
@@ -1071,9 +1171,9 @@ class GeoLocation(sgqlc.types.Type):
     __schema__ = coverified_schema
     __field_names__ = ('_label_', 'id', 'name', 'location', 'radius', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
-    location = sgqlc.types.Field('Location', graphql_name='location')
+    location = sgqlc.types.Field('LocationGoogle', graphql_name='location')
     radius = sgqlc.types.Field(Float, graphql_name='radius')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     created_at = sgqlc.types.Field(DateTime, graphql_name='createdAt')
@@ -1083,13 +1183,13 @@ class Language(sgqlc.types.Type):
     __schema__ = coverified_schema
     __field_names__ = ('_label_', 'id', 'name', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     created_at = sgqlc.types.Field(DateTime, graphql_name='createdAt')
 
 
-class Location(sgqlc.types.Type):
+class LocationGoogle(sgqlc.types.Type):
     __schema__ = coverified_schema
     __field_names__ = ('id', 'google_place_id', 'formatted_address', 'lat', 'lng')
     id = sgqlc.types.Field(ID, graphql_name='id')
@@ -1113,7 +1213,7 @@ class Mutation(sgqlc.types.Type):
         'delete_sources', 'create_widget', 'create_widgets', 'update_widget', 'update_widgets', 'delete_widget',
         'delete_widgets', 'create_entry', 'create_entries', 'update_entry', 'update_entries', 'delete_entry',
         'delete_entries', 'create_user', 'create_users', 'update_user', 'update_users', 'delete_user', 'delete_users',
-        'authenticate_user_with_password', 'unauthenticate_user')
+        'authenticate_user_with_password', 'unauthenticate_user', 'update_authenticated_user')
     create_organization = sgqlc.types.Field('Organization', graphql_name='createOrganization',
                                             args=sgqlc.types.ArgDict((
                                                 ('data', sgqlc.types.Arg(OrganizationCreateInput, graphql_name='data',
@@ -1368,13 +1468,19 @@ class Mutation(sgqlc.types.Type):
                                                         ))
                                                         )
     unauthenticate_user = sgqlc.types.Field('unauthenticateUserOutput', graphql_name='unauthenticateUser')
+    update_authenticated_user = sgqlc.types.Field('User', graphql_name='updateAuthenticatedUser',
+                                                  args=sgqlc.types.ArgDict((
+                                                      ('data', sgqlc.types.Arg(UserUpdateInput, graphql_name='data',
+                                                                               default=None)),
+                                                  ))
+                                                  )
 
 
 class Organization(sgqlc.types.Type):
     __schema__ = coverified_schema
     __field_names__ = ('_label_', 'id', 'name', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     created_at = sgqlc.types.Field(DateTime, graphql_name='createdAt')
@@ -1385,10 +1491,10 @@ class Query(sgqlc.types.Type):
     __field_names__ = (
         'all_organizations', 'organization', '_all_organizations_meta', 'all_tags', 'tag',
         '_all_tags_meta', 'all_languages', 'language', '_all_languages_meta',
-        'all_geo_locations', 'geo_location', '_all_geo_locations_meta',  'all_sources', 'source',
-        '_all_sources_meta',  'all_widgets', 'widget', '_all_widgets_meta',
-        'all_entries', 'entry', '_all_entries_meta',  'all_users', 'user', '_all_users_meta',
-       '_ks_lists_meta', 'app_version', 'authenticated_user')
+        'all_geo_locations', 'geo_location', '_all_geo_locations_meta', 'all_sources', 'source',
+        '_all_sources_meta', 'all_widgets', 'widget', '_all_widgets_meta',
+        'all_entries', 'entry', '_all_entries_meta', 'all_users', 'user', '_all_users_meta', '_ks_lists_meta',
+        'app_version', 'authenticated_user')
     all_organizations = sgqlc.types.Field(sgqlc.types.list_of('Organization'), graphql_name='allOrganizations',
                                           args=sgqlc.types.ArgDict((
                                               ('where', sgqlc.types.Arg(OrganizationWhereInput, graphql_name='where',
@@ -1626,22 +1732,28 @@ class Query(sgqlc.types.Type):
 
 class Source(sgqlc.types.Type):
     __schema__ = coverified_schema
-    __field_names__ = ('_label_', 'id', 'name', 'url', 'location', 'updated_at', 'created_at')
+    __field_names__ = ('_label_', 'id', 'name', 'url', 'location', 'description', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
     url = sgqlc.types.Field(String, graphql_name='url')
     location = sgqlc.types.Field(GeoLocation, graphql_name='location')
+    description = sgqlc.types.Field(String, graphql_name='description')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     created_at = sgqlc.types.Field(DateTime, graphql_name='createdAt')
 
 
 class Tag(sgqlc.types.Type):
     __schema__ = coverified_schema
-    __field_names__ = ('_label_', 'id', 'name', 'updated_at', 'created_at')
+    __field_names__ = (
+        '_label_', 'id', 'name', 'language', 'description', 'relevance', 'image', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
+    language = sgqlc.types.Field(Language, graphql_name='language')
+    description = sgqlc.types.Field(String, graphql_name='description')
+    relevance = sgqlc.types.Field(Int, graphql_name='relevance')
+    image = sgqlc.types.Field(CloudinaryImage_File, graphql_name='image')
     updated_at = sgqlc.types.Field(DateTime, graphql_name='updatedAt')
     created_at = sgqlc.types.Field(DateTime, graphql_name='createdAt')
 
@@ -1651,7 +1763,7 @@ class User(sgqlc.types.Type):
     __field_names__ = (
         '_label_', 'id', 'name', 'email', 'is_admin', 'password_is_set', 'organization', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
     email = sgqlc.types.Field(String, graphql_name='email')
     is_admin = sgqlc.types.Field(Boolean, graphql_name='isAdmin')
@@ -1666,19 +1778,20 @@ class Widget(sgqlc.types.Type):
     __field_names__ = (
         '_label_', 'id', 'name', 'organization', 'language', 'sources', '_sources_meta', 'updated_at', 'created_at')
     _label_ = sgqlc.types.Field(String, graphql_name='_label_')
-    id = sgqlc.types.Field(ID, graphql_name='id')
+    id = sgqlc.types.Field(sgqlc.types.non_null(ID), graphql_name='id')
     name = sgqlc.types.Field(String, graphql_name='name')
     organization = sgqlc.types.Field(Organization, graphql_name='organization')
     language = sgqlc.types.Field(Language, graphql_name='language')
-    sources = sgqlc.types.Field(sgqlc.types.list_of(Source), graphql_name='sources', args=sgqlc.types.ArgDict((
-        ('where', sgqlc.types.Arg(SourceWhereInput, graphql_name='where', default=None)),
-        ('search', sgqlc.types.Arg(String, graphql_name='search', default=None)),
-        ('sort_by', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(SortSourcesBy)), graphql_name='sortBy',
-                                    default=None)),
-        ('order_by', sgqlc.types.Arg(String, graphql_name='orderBy', default=None)),
-        ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
-        ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
-    ))
+    sources = sgqlc.types.Field(sgqlc.types.non_null(sgqlc.types.list_of(sgqlc.types.non_null(Source))),
+                                graphql_name='sources', args=sgqlc.types.ArgDict((
+            ('where', sgqlc.types.Arg(SourceWhereInput, graphql_name='where', default=None)),
+            ('search', sgqlc.types.Arg(String, graphql_name='search', default=None)),
+            ('sort_by', sgqlc.types.Arg(sgqlc.types.list_of(sgqlc.types.non_null(SortSourcesBy)), graphql_name='sortBy',
+                                        default=None)),
+            ('order_by', sgqlc.types.Arg(String, graphql_name='orderBy', default=None)),
+            ('first', sgqlc.types.Arg(Int, graphql_name='first', default=None)),
+            ('skip', sgqlc.types.Arg(Int, graphql_name='skip', default=None)),
+        ))
                                 )
     _sources_meta = sgqlc.types.Field('_QueryMeta', graphql_name='_sourcesMeta', args=sgqlc.types.ArgDict((
         ('where', sgqlc.types.Arg(SourceWhereInput, graphql_name='where', default=None)),
